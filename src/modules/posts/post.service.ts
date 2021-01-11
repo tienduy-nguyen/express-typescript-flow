@@ -1,20 +1,24 @@
 import { NotFoundException } from 'src/common/exceptions';
-import { injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { PostRepository } from './repositories';
 import { IPostRepository } from './repositories/post.repository.interface';
 
 @injectable()
 export class PostService {
-  private postRepository: IPostRepository;
-  constructor() {
-    this.postRepository = new PostRepository();
-  }
+  constructor(
+    @inject('PostRepository')
+    private postRepository: IPostRepository,
+  ) {}
   public async getPosts() {
-    return await this.postRepository.getPosts();
+    const posts = await this.postRepository.getPosts();
+    return posts;
   }
   public async getPostById(id: string) {
-    return await this.postRepository.getPostById(id);
+    const post = await this.postRepository.getPostById(id);
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return post;
   }
   public async createPost(postDto: CreatePostDto) {
     return await this.postRepository.createPost(postDto);

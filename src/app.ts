@@ -4,7 +4,7 @@ import cors from 'cors';
 import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
-import { Connection, createConnection } from 'typeorm';
+import { createConnection } from 'typeorm';
 
 export class App {
   public app: Application;
