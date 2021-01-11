@@ -1,6 +1,6 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { container, injectable } from 'tsyringe';
-import { CreatePostDto } from './dto';
+import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 import { Request, Response } from 'express';
 
@@ -8,25 +8,53 @@ import { Request, Response } from 'express';
 export class PostController {
   public path = '/posts';
   public router = express.Router();
+  private postService: PostService;
 
-  constructor(private postService: PostService) {
+  constructor() {
     this.postService = container.resolve(PostService);
     this.initializeRoutes();
   }
 
   /* Private methods */
   private initializeRoutes() {
-    this.router.get(this.path, this.getAllPosts);
-    this.router.post(this.path, this.createAPost);
+    this.router.get(this.path, this.getPosts);
+    this.router.get(`${this.path}/:id`, this.getPostById);
+    this.router.post(this.path, this.createPost);
+    this.router.put(`${this.path}/:id`, this.updatePost);
+    this.router.delete(`${this.path}/:id`, this.deletePost);
   }
 
-  private getAllPosts = (req: Request, res: Response) => {
-    res.send(this.postService.getPosts());
+  /* Private methods of routes */
+  private getPosts = async (req: Request, res: Response) => {
+    res.json(await this.postService.getPosts());
+  };
+  private getPostById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const post = await this.postService.getPostById(req.params.id);
+      res.json(post);
+    } catch (error) {
+      next(error);
+    }
   };
 
-  private createAPost = (req: Request, res: Response) => {
+  private createPost = (req: Request, res: Response) => {
     const post: CreatePostDto = req.body;
     this.postService.createPost(post);
-    res.send(post);
+    res.json(post);
+  };
+  private updatePost = (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const postDto: UpdatePostDto = req.body;
+      res.json(this.postService.updatePost(req.params.id, postDto));
+    } catch (error) {
+      next(error);
+    }
+  };
+  private deletePost = (req: Request, res: Response) => {
+    res.json(this.postService.deletePost(req.params.id));
   };
 }

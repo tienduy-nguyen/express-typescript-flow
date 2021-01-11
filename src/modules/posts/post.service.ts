@@ -1,21 +1,36 @@
-import { injectable } from 'tsyringe';
-import { CreatePostDto } from './dto';
-import { Post } from './post.interface';
+import { NotFoundException } from 'src/common/exceptions';
+import { inject, injectable } from 'tsyringe';
+import { CreatePostDto, UpdatePostDto } from './dto';
+import { IPostRepository } from './repositories/post.repository.interface';
 
 @injectable()
 export class PostService {
-  public getPosts() {
-    return this.posts;
+  constructor(
+    @inject('PostRepository')
+    private postRepository: IPostRepository,
+  ) {}
+  public async getPosts() {
+    const posts = await this.postRepository.getPosts();
+    return posts;
   }
-  public createPost(postDto: CreatePostDto) {
-    this.posts.push(postDto);
+  public async getPostById(id: string) {
+    const post = await this.postRepository.getPostById(id);
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return post;
   }
-
-  private posts: Post[] = [
-    {
-      author: 'Marcin',
-      content: 'Dolor sit amet',
-      title: 'Lorem Ipsum',
-    },
-  ];
+  public async createPost(postDto: CreatePostDto) {
+    return await this.postRepository.createPost(postDto);
+  }
+  public async updatePost(id: string, postDto: UpdatePostDto) {
+    const post = await this.postRepository.getPostById(id);
+    if (!post) {
+      throw new NotFoundException(`Post with id ${id} not found`);
+    }
+    return await this.postRepository.updatePost(post, postDto);
+  }
+  public async deletePost(id: string) {
+    await this.postRepository.deletePost(id);
+  }
 }
