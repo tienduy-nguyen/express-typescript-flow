@@ -2,37 +2,23 @@ import express, { Application } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { IController } from './common/interfaces/controller.interface';
-import { container, injectable } from 'tsyringe';
 import { PostController } from './modules/posts/post.controller';
+import { container } from 'tsyringe';
 
-export async function createServer(app: Application) {
-  //Get .env variable
-  dotenv.config();
-
-  app.use(cors());
-  app.use(express.json());
-
-  app.get('/', (req, res) => {
-    res.send('Hi there!');
-  });
-}
-
-@injectable()
 export class App {
   public app: Application;
-  private controllers = [] as IController[];
-  private port = 5000;
+  public controllers = [] as IController[];
+  public port = 5000;
 
   constructor() {
     this.app = express();
-    const postController = container.resolve(PostController);
-    this.controllers.push(postController);
   }
 
   /* Public methods */
-  public bootstrapServerExpress() {
+  public async bootstrapServerExpress() {
     this.initConfig();
     this.initMiddleware();
+
     this.initControllers();
 
     this.app.listen(this.port, () => {
@@ -44,16 +30,22 @@ export class App {
   private initConfig() {
     dotenv.config();
     this.port = Number(process.env.SERVER_PORT);
-    console.log('-----------', this.port);
   }
   private initMiddleware() {
-    this.app.use(cors);
+    this.app.use(cors());
     this.app.use(express.json());
   }
+
+  private getAllControllers() {
+    const postController = container.resolve(PostController);
+    this.controllers.push(postController);
+  }
   private initControllers() {
+    this.getAllControllers();
     this.app.get('/', (req, res) => {
       res.send('Hi there!');
     });
+
     this.controllers.forEach(c => {
       this.app.use('/api', c.router);
     });

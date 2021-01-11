@@ -10,7 +10,7 @@ export class PostController {
   public router = express.Router();
 
   constructor(private postService: PostService) {
-    postService = container.resolve(PostService);
+    this.postService = container.resolve(PostService);
     this.initializeRoutes();
   }
 
