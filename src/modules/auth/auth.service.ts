@@ -25,17 +25,13 @@ export class AuthService {
     }
     return new BadRequestException('Invalid credentials');
   }
-  public async isExists(userInput: any) {
-    const user = await this.userRepository.findOne({
-      where: { email: userInput.email },
-    });
-    if (user) return true;
-    return false;
-  }
+
   public async registerUser(userDto: RegisterUserDto): Promise<User> {
     try {
-      const isExisted = this.isExists(userDto);
-      if (isExisted) {
+      const userCheck = await this.userRepository.findOne({
+        where: { email: userDto.email },
+      });
+      if (userCheck) {
         throw new ConflictException(
           `User with email: ${userDto.email} already exists`,
         );
@@ -51,5 +47,13 @@ export class AuthService {
     } catch (error) {
       throw new BadRequestException('Something went wrong');
     }
+  }
+
+  public async isExists(userInput: any) {
+    const user = await this.userRepository.findOne({
+      where: { email: userInput.email },
+    });
+    if (user) return true;
+    return false;
   }
 }
