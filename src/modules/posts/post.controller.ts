@@ -1,6 +1,6 @@
 import express from 'express';
 import { container, injectable } from 'tsyringe';
-import { CreatePostDto } from './dto';
+import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 import { Request, Response } from 'express';
 
@@ -16,17 +16,31 @@ export class PostController {
 
   /* Private methods */
   private initializeRoutes() {
-    this.router.get(this.path, this.getAllPosts);
-    this.router.post(this.path, this.createAPost);
+    this.router.get(this.path, this.getPosts);
+    this.router.get(this.path, this.getPostById);
+    this.router.post(this.path, this.createPost);
+    this.router.put(this.path, this.updatePost);
+    this.router.delete(this.path, this.deletePost);
   }
 
-  private getAllPosts = (req: Request, res: Response) => {
+  /* Private methods of routes */
+  private getPosts = (req: Request, res: Response) => {
     res.send(this.postService.getPosts());
   };
+  private getPostById = (req: Request, res: Response) => {
+    res.send(this.postService.getPostById(req.params.id));
+  };
 
-  private createAPost = (req: Request, res: Response) => {
+  private createPost = (req: Request, res: Response) => {
     const post: CreatePostDto = req.body;
     this.postService.createPost(post);
     res.send(post);
+  };
+  private updatePost = (req: Request, res: Response) => {
+    const postDto: UpdatePostDto = req.body;
+    res.send(this.postService.updatePost(req.params.id, postDto));
+  };
+  private deletePost = (req: Request, res: Response) => {
+    res.send(this.postService.deletePost(req.params.id));
   };
 }

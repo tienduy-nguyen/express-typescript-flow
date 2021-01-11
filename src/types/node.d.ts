@@ -2,10 +2,14 @@ declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: 'development' | 'production' | 'test';
     readonly SERVER_PORT: string;
-    readonly DB_TYPE: string;
-    readonly DB_HOST: string;
-    readonly DB_USERNAME: string;
-    readonly DB_PASSWORD: string;
-    readonly DB_PORT: string;
+    readonly TYPEORM_CONNECTION: string;
+    readonly TYPEORM_HOST: string;
+    readonly TYPEORM_USERNAME: string;
+    readonly TYPEORM_PASSWORD: string;
+    readonly TYPEORM_DATABASE: string;
+    readonly TYPEORM_PORT: string;
+    readonly TYPEORM_LOGGING: string;
+    readonly TYPEORM_ENTITIES: string;
+    readonly TYPEORM_MIGRATIONS: string;
   }
 }

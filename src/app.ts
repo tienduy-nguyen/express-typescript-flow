@@ -4,6 +4,8 @@ import cors from 'cors';
 import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
+import { createConnection } from 'typeorm';
+import { ormConfig } from './common/config/ormConfig';
 
 export class App {
   public app: Application;
@@ -18,6 +20,7 @@ export class App {
   public async bootstrapServerExpress() {
     this.initConfig();
     this.initMiddleware();
+    this.connectionDB();
 
     this.initControllers();
 
@@ -49,5 +52,9 @@ export class App {
     this.controllers.forEach(c => {
       this.app.use('/api', c.router);
     });
+  }
+
+  private async connectionDB() {
+    await createConnection(ormConfig());
   }
 }
