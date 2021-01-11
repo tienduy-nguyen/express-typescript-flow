@@ -5,6 +5,7 @@ export const errorMiddleware = (
   err: HttpException,
   req: Request,
   res: Response,
+  _,
 ) => {
   res.status(err.status || 500);
   res.json({

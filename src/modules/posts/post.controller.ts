@@ -3,6 +3,7 @@ import { container, injectable } from 'tsyringe';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 import { Request, Response } from 'express';
+import handler from 'express-async-handler';
 
 @injectable()
 export class PostController {
@@ -17,11 +18,11 @@ export class PostController {
 
   /* Private methods */
   private initializeRoutes() {
-    this.router.get(this.path, this.getPosts);
-    this.router.get(`${this.path}/:id`, this.getPostById);
-    this.router.post(this.path, this.createPost);
-    this.router.put(`${this.path}/:id`, this.updatePost);
-    this.router.delete(`${this.path}/:id`, this.deletePost);
+    this.router.get(this.path, handler(this.getPosts));
+    this.router.get(`${this.path}/:id`, handler(this.getPostById));
+    this.router.post(this.path, handler(this.createPost));
+    this.router.put(`${this.path}/:id`, handler(this.updatePost));
+    this.router.delete(`${this.path}/:id`, handler(this.deletePost));
   }
 
   /* Private methods of routes */
