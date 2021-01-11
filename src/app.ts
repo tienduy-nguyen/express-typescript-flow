@@ -5,6 +5,7 @@ import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
+import { errorMiddleware } from '@common/middleware';
 
 export class App {
   public app: Application;
@@ -13,15 +14,16 @@ export class App {
 
   constructor() {
     this.app = express();
+    this.initConfig();
   }
 
   /* Public methods */
   public async bootstrapServerExpress() {
-    this.initConfig();
+    await this.connectionDb();
     this.initMiddleware();
-    await this.connectionDB();
-
     this.initControllers();
+
+    this.initErrorHandling();
 
     this.app.listen(this.port, () => {
       console.log(`Server is running at http://localhost:${this.port}`);
@@ -37,11 +39,10 @@ export class App {
     this.app.use(cors());
     this.app.use(express.json());
   }
-
-  private getAllControllers() {
-    const postController = container.resolve(PostController);
-    this.controllers.push(postController);
+  private initErrorHandling() {
+    this.app.use(errorMiddleware);
   }
+
   private initControllers() {
     this.getAllControllers();
     this.app.get('/', (req, res) => {
@@ -49,11 +50,15 @@ export class App {
     });
 
     this.controllers.forEach(c => {
-      this.app.use('/api', c.router);
+      this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
     });
   }
+  private getAllControllers() {
+    const postController = container.resolve(PostController);
+    this.controllers.push(postController);
+  }
 
-  private async connectionDB() {
+  private async connectionDb() {
     const connection = await createConnection({
       type: 'postgres',
       name: 'default',
@@ -70,6 +75,7 @@ export class App {
         migrationsDir: 'src/common/migrations',
       },
     });
+    console.log('Database connected!');
     return connection;
   }
 }
