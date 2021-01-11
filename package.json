@@ -1,0 +1,8 @@
+{
+  "name": "nodejs-typescript-flow",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@gitlab.com:tienduy-nguyen/nodejs-typescript-flow.git",
+  "author": "tienduy-nguyen <tienduy.nguyen.dev@gmail.com>",
+  "license": "MIT"
+}
