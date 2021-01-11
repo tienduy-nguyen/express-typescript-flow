@@ -4,6 +4,7 @@ import { CreatePostDto, UpdatePostDto } from './dto';
 import { PostService } from './post.service';
 import { Request, Response } from 'express';
 import handler from 'express-async-handler';
+import { validationMiddleware } from '@common/middleware';
 
 @injectable()
 export class PostController {
@@ -20,8 +21,16 @@ export class PostController {
   private initializeRoutes() {
     this.router.get(this.path, handler(this.getPosts));
     this.router.get(`${this.path}/:id`, handler(this.getPostById));
-    this.router.post(this.path, handler(this.createPost));
-    this.router.put(`${this.path}/:id`, handler(this.updatePost));
+    this.router.post(
+      this.path,
+      validationMiddleware(CreatePostDto),
+      handler(this.createPost),
+    );
+    this.router.put(
+      `${this.path}/:id`,
+      validationMiddleware(UpdatePostDto, true),
+      handler(this.updatePost),
+    );
     this.router.delete(`${this.path}/:id`, handler(this.deletePost));
   }
 
@@ -59,10 +68,15 @@ export class PostController {
       next(error);
     }
   };
-  private updatePost = (req: Request, res: Response, next: NextFunction) => {
+  private updatePost = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
     try {
       const postDto: UpdatePostDto = req.body;
-      res.json(this.postService.updatePost(req.params.id, postDto));
+      const post = await this.postService.updatePost(req.params.id, postDto);
+      res.json(post);
     } catch (error) {
       next(error);
     }

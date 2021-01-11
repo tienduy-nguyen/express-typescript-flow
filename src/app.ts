@@ -5,7 +5,7 @@ import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
-import { errorMiddleware } from '@common/middleware/error.middleware';
+import { errorMiddleware } from '@common/middleware';
 
 export class App {
   public app: Application;
