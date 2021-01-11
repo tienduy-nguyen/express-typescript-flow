@@ -25,8 +25,16 @@ export class PostController {
   }
 
   /* Private methods of routes */
-  private getPosts = async (req: Request, res: Response) => {
-    res.json(await this.postService.getPosts());
+  private getPosts = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      res.json(await this.postService.getPosts());
+    } catch (error) {
+      next(error);
+    }
   };
   private getPostById = async (
     req: Request,
@@ -41,10 +49,14 @@ export class PostController {
     }
   };
 
-  private createPost = (req: Request, res: Response) => {
-    const post: CreatePostDto = req.body;
-    this.postService.createPost(post);
-    res.json(post);
+  private createPost = (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const post: CreatePostDto = req.body;
+      this.postService.createPost(post);
+      res.json(post);
+    } catch (error) {
+      next(error);
+    }
   };
   private updatePost = (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -54,7 +66,11 @@ export class PostController {
       next(error);
     }
   };
-  private deletePost = (req: Request, res: Response) => {
-    res.json(this.postService.deletePost(req.params.id));
+  private deletePost = (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.json(this.postService.deletePost(req.params.id));
+    } catch (error) {
+      next(error);
+    }
   };
 }

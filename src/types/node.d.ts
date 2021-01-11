@@ -11,5 +11,6 @@ declare namespace NodeJS {
     readonly TYPEORM_LOGGING: string;
     readonly TYPEORM_ENTITIES: string;
     readonly TYPEORM_MIGRATIONS: string;
+    readonly ROUTE_GLOBAL_PREFIX: string;
   }
 }
