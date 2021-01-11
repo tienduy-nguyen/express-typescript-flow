@@ -1,4 +1,4 @@
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { getRepository, Repository } from 'typeorm';
 import { User } from '@modules/users/user.entity';
 import { BadRequestException, ConflictException } from '@common/exceptions';

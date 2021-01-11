@@ -1,11 +1,8 @@
-import {
-  BadRequestException,
-  InvalidCredentialsException,
-} from '@common/exceptions';
+import { InvalidCredentialsException } from '@common/exceptions';
 import { validationMiddleware } from '@common/middleware';
 import { User } from '@modules/users/user.entity';
 import express, { Request, Response, NextFunction } from 'express';
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { IDataStoredInToken, ITokenCookie } from './auth.interface';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -13,6 +10,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { JwtService } from './jwt.service';
 import handler from 'express-async-handler';
 
+@injectable()
 export class AuthController {
   public path = '/auth';
   public router = express.Router();

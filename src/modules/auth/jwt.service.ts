@@ -1,8 +1,4 @@
-import {
-  IDataStoredInToken,
-  IRequestUser,
-  ITokenCookie,
-} from './auth.interface';
+import { IDataStoredInToken, ITokenCookie } from './auth.interface';
 import jwt from 'jsonwebtoken';
 import { injectable } from 'tsyringe';
 import { InvalidCredentialsException } from '@common/exceptions';
