@@ -6,6 +6,7 @@ import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
+import { AuthController } from '@modules/auth/auth.controller';
 
 export class App {
   public app: Application;
@@ -55,7 +56,9 @@ export class App {
   }
   private getAllControllers() {
     const postController = container.resolve(PostController);
+    const authController = container.resolve(AuthController);
     this.controllers.push(postController);
+    this.controllers.push(authController);
   }
 
   private async connectionDb() {
