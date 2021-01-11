@@ -4,7 +4,7 @@ import cors from 'cors';
 import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
-import { createConnection } from 'typeorm';
+import { Connection, createConnection } from 'typeorm';
 
 export class App {
   public app: Application;
@@ -19,7 +19,7 @@ export class App {
   public async bootstrapServerExpress() {
     this.initConfig();
     this.initMiddleware();
-    this.connectionDB();
+    await this.connectionDB();
 
     this.initControllers();
 
@@ -54,7 +54,22 @@ export class App {
   }
 
   private async connectionDB() {
-    const connection = await createConnection();
-    await connection.synchronize();
+    const connection = await createConnection({
+      type: 'postgres',
+      name: 'default',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'postgres',
+      database: 'test_db',
+      entities: ['src/modules/**/*.entity.ts'],
+      logging: false,
+      synchronize: true,
+      migrations: ['src/common/migrations/**/*.ts'],
+      cli: {
+        migrationsDir: 'src/common/migrations',
+      },
+    });
+    return connection;
   }
 }

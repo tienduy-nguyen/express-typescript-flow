@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import moment from 'moment-timezone';
 @Entity()
-export class Post {
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,15 +14,15 @@ export class Post {
   @Column()
   content: string;
 
-  @Column('timestamp', {
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
+  @Column({
+    type: Date,
+    default: moment(new Date()).format('YYYY-MM-DD HH:ss'),
   })
-  createdAt: Date;
+  createdAt;
 
-  @Column('timestamp', {
-    nullable: false,
-    default: () => 'CURRENT_TIMESTAMP',
+  @Column({
+    type: Date,
+    default: null,
   })
-  updatedAt: Date;
+  updatedAt;
 }
