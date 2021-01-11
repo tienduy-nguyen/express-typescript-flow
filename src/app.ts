@@ -5,7 +5,6 @@ import { IController } from './common/interfaces/controller.interface';
 import { PostController } from './modules/posts/post.controller';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
-import { ormConfig } from './common/config/ormConfig';
 
 export class App {
   public app: Application;
@@ -55,6 +54,7 @@ export class App {
   }
 
   private async connectionDB() {
-    await createConnection(ormConfig());
+    const connection = await createConnection();
+    await connection.synchronize();
   }
 }

@@ -8,8 +8,9 @@ import { Request, Response } from 'express';
 export class PostController {
   public path = '/posts';
   public router = express.Router();
+  private postService: PostService;
 
-  constructor(private postService: PostService) {
+  constructor() {
     this.postService = container.resolve(PostService);
     this.initializeRoutes();
   }

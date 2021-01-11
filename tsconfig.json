@@ -30,7 +30,11 @@
     "outDir": "./dist",
     "allowJs": true,
     "noEmit": false,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@common/*": ["src/common/*"],
+    }
   },
   "include": [
     "src"

@@ -1,13 +1,14 @@
 import { NotFoundException } from 'src/common/exceptions';
-import { container, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { PostRepository } from './repositories/post.repository';
+import { PostRepository } from './repositories';
 import { IPostRepository } from './repositories/post.repository.interface';
 
 @injectable()
 export class PostService {
-  constructor(private postRepository: IPostRepository) {
-    this.postRepository = container.resolve(PostRepository);
+  private postRepository: IPostRepository;
+  constructor() {
+    this.postRepository = new PostRepository();
   }
   public async getPosts() {
     return await this.postRepository.getPosts();
