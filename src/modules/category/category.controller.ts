@@ -4,7 +4,7 @@ import { CategoryService } from './category.service';
 import handler from 'express-async-handler';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
 import { NotFoundException } from '@common/exceptions';
-import { validationMiddleware } from '@common/middleware';
+import { authMiddleware, validationMiddleware } from '@common/middleware';
 
 @injectable()
 export class CategoryController {
@@ -20,19 +20,13 @@ export class CategoryController {
     this.router.get('/', handler(this.index));
     this.router.get('/:id', handler(this.show));
 
-    this.router.post(
-      '/:id',
-      validationMiddleware(CreateCategoryDto),
-      handler(this.new),
-    );
+    this.router
+      .all(`${this.path}/*`, authMiddleware)
+      .post('/:id', validationMiddleware(CreateCategoryDto), handler(this.new))
 
-    this.router.put(
-      '/:id',
-      validationMiddleware(UpdateCategoryDto),
-      handler(this.new),
-    );
+      .put('/:id', validationMiddleware(UpdateCategoryDto), handler(this.new))
 
-    this.router.delete('/:id', handler(this.new));
+      .delete('/:id', handler(this.new));
   }
 
   /* Private methods for routes */
