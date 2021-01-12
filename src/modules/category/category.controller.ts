@@ -23,10 +23,12 @@ export class CategoryController {
     this.router
       .all(`${this.path}/*`, authMiddleware)
       .post('/:id', validationMiddleware(CreateCategoryDto), handler(this.new))
-
-      .put('/:id', validationMiddleware(UpdateCategoryDto), handler(this.new))
-
-      .delete('/:id', handler(this.new));
+      .put(
+        '/:id',
+        validationMiddleware(UpdateCategoryDto),
+        handler(this.update),
+      )
+      .delete('/:id', handler(this.delete));
   }
 
   /* Private methods for routes */
