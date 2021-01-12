@@ -1,14 +1,14 @@
 import express, { Application } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
-import { IController } from './common/interfaces/controller.interface';
-import { PostController } from './modules/posts/post.controller';
+import { IController } from '@common/interfaces/controller.interface';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
-import { AuthController } from '@modules/auth/auth.controller';
 import { ormConfig } from '@common/config/ormConfig';
 import helmet from 'helmet';
+import './app.provider';
+import { AppController } from './app.controller';
 
 export class App {
   public app: Application;
@@ -48,20 +48,17 @@ export class App {
   }
 
   private initControllers() {
-    this.getAllControllers();
     this.app.get('/', (req, res) => {
       res.send('Hi there!');
     });
 
+    // Get all controller registered from app controller
+    const appControllers = container.resolve(AppController);
+    this.controllers = appControllers.all;
+
     this.controllers.forEach(c => {
       this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
     });
-  }
-  private getAllControllers() {
-    const postController = container.resolve(PostController);
-    const authController = container.resolve(AuthController);
-    this.controllers.push(postController);
-    this.controllers.push(authController);
   }
 
   private async connectionDb() {
