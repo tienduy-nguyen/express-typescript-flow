@@ -70,7 +70,7 @@ export class AddressController {
         address,
         addressDto,
       );
-      return updated;
+      res.send(updated);
     } catch (error) {
       next(error);
     }

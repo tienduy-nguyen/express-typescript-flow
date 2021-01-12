@@ -1,44 +1,41 @@
 import express, { Application } from 'express';
-import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { IController } from '@common/interfaces/controller.interface';
 import { container, injectable } from 'tsyringe';
-import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
-import { ormConfig } from '@common/config/ormConfig';
 import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
 
 @injectable()
 export class App {
-  public app: Application;
-  public controllers = [] as IController[];
-  public port = 5000; // Default port
+  private controllers = [] as IController[];
+  private port = 5000; // Default port
+  private app: Application;
 
   constructor() {
     this.app = express();
-    this.initConfig();
+    this.bootstrapServerExpress();
   }
 
   /* Public methods */
-  public async bootstrapServerExpress() {
-    await this.connectionDb();
-    this.initMiddleware();
-    this.initControllers();
-
-    this.initErrorHandling();
-
+  public get getServer() {
+    return this.app;
+  }
+  public listen() {
     this.app.listen(this.port, () => {
       console.log(`Server is running at http://localhost:${this.port}/`);
     });
   }
 
-  /* Private methods */
-  private initConfig() {
-    dotenv.config();
-    this.port = Number(process.env.SERVER_PORT); // Get port from .env file
+  /* Bootstrap server */
+  private async bootstrapServerExpress() {
+    this.port = Number(process.env.SERVER_PORT);
+    this.initMiddleware();
+    this.initControllers();
+    this.initErrorHandling();
   }
+
   private initMiddleware() {
     this.app.use(cors());
     this.app.use(express.json());
@@ -60,17 +57,5 @@ export class App {
     this.controllers.forEach(c => {
       this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
     });
-  }
-
-  private async connectionDb() {
-    try {
-      const connection = await createConnection(ormConfig());
-      await connection.runMigrations();
-      console.log('Database connected!');
-      return connection;
-    } catch (error) {
-      console.log('Error while connecting to the database', error);
-      return error;
-    }
   }
 }

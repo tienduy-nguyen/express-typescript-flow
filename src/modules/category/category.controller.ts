@@ -69,13 +69,12 @@ export class CategoryController {
       const category = await this.categoryService.getCategoryById(id);
       if (!category) {
         next(new NotFoundException(`Category with id ${id} not found`));
-        return;
       }
       const catUpdated = await this.categoryService.updateCategory(
         category,
         catDto,
       );
-      return catUpdated;
+      res.send(catUpdated);
     } catch (error) {
       next(error);
     }
