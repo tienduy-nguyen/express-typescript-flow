@@ -62,8 +62,14 @@ export class App {
   }
 
   private async connectionDb() {
-    const connection = await createConnection(ormConfig());
-    console.log('Database connected!');
-    return connection;
+    try {
+      const connection = await createConnection(ormConfig());
+      await connection.runMigrations();
+      console.log('Database connected!');
+      return connection;
+    } catch (error) {
+      console.log('Error while connecting to the database', error);
+      return error;
+    }
   }
 }
