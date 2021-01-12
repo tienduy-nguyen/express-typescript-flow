@@ -1,6 +1,5 @@
 import 'reflect-metadata';
-import '@common/containers';
-import { App } from './app';
+import { App } from './main/app';
 
 async function bootstrap() {
   const app = new App();

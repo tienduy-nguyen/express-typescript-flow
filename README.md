@@ -6,3 +6,7 @@
 3. Error handling & validation data class
 4. Authentication with JsonWebToken
 5. Typeorm database relationship
+6. Testing
+7. Two-factor authentication
+8. CI-CD
+9.

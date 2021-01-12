@@ -1,17 +1,19 @@
 import express, { Application } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
-import { IController } from './common/interfaces/controller.interface';
-import { PostController } from './modules/posts/post.controller';
+import { IController } from '@common/interfaces/controller.interface';
 import { container } from 'tsyringe';
 import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
-import { AuthController } from '@modules/auth/auth.controller';
+import { ormConfig } from '@common/config/ormConfig';
+import helmet from 'helmet';
+import './app.provider';
+import { AppController } from './app.controller';
 
 export class App {
   public app: Application;
   public controllers = [] as IController[];
-  public port = 5000;
+  public port = 5000; // Default port
 
   constructor() {
     this.app = express();
@@ -27,57 +29,40 @@ export class App {
     this.initErrorHandling();
 
     this.app.listen(this.port, () => {
-      console.log(`Server is running at http://localhost:${this.port}`);
+      console.log(`Server is running at http://localhost:${this.port}/`);
     });
   }
 
   /* Private methods */
   private initConfig() {
     dotenv.config();
-    this.port = Number(process.env.SERVER_PORT);
+    this.port = Number(process.env.SERVER_PORT); // Get port from .env file
   }
   private initMiddleware() {
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use(helmet());
   }
   private initErrorHandling() {
     this.app.use(errorMiddleware);
   }
 
   private initControllers() {
-    this.getAllControllers();
     this.app.get('/', (req, res) => {
       res.send('Hi there!');
     });
+
+    // Get all controller registered from app controller
+    const appControllers = container.resolve(AppController);
+    this.controllers = appControllers.all;
 
     this.controllers.forEach(c => {
       this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
     });
   }
-  private getAllControllers() {
-    const postController = container.resolve(PostController);
-    const authController = container.resolve(AuthController);
-    this.controllers.push(postController);
-    this.controllers.push(authController);
-  }
 
   private async connectionDb() {
-    const connection = await createConnection({
-      type: 'postgres',
-      name: 'default',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'test_db',
-      entities: ['src/modules/**/*.entity.ts'],
-      logging: false,
-      synchronize: true,
-      migrations: ['src/common/migrations/**/*.ts'],
-      cli: {
-        migrationsDir: 'src/common/migrations',
-      },
-    });
+    const connection = await createConnection(ormConfig());
     console.log('Database connected!');
     return connection;
   }

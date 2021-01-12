@@ -1,8 +1,15 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import moment from 'moment-timezone';
+import { Category } from '@modules/category/category.entity';
 @Entity()
 export class Post extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column()
@@ -25,4 +32,7 @@ export class Post extends BaseEntity {
     default: null,
   })
   updatedAt;
+
+  @ManyToMany(() => Category, (category: Category) => category.posts)
+  categories: Category[];
 }
