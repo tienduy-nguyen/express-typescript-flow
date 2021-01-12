@@ -53,9 +53,9 @@ export class CategoryService {
 
   public async deleteCategory(id: string): Promise<void> {
     try {
+      await this.categoryRepository.delete(id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-    await this.categoryRepository.delete(id);
   }
 }
