@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
 import { IController } from '@common/interfaces/controller.interface';
-import { container } from 'tsyringe';
+import { container, injectable } from 'tsyringe';
 import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
 import { ormConfig } from '@common/config/ormConfig';
@@ -10,6 +10,7 @@ import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
 
+@injectable()
 export class App {
   public app: Application;
   public controllers = [] as IController[];
