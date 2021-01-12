@@ -8,6 +8,7 @@ import { createConnection } from 'typeorm';
 import { errorMiddleware } from '@common/middleware';
 import { AuthController } from '@modules/auth/auth.controller';
 import { ormConfig } from '@common/config/ormConfig';
+import helmet from 'helmet';
 
 export class App {
   public app: Application;
@@ -40,6 +41,7 @@ export class App {
   private initMiddleware() {
     this.app.use(cors());
     this.app.use(express.json());
+    this.app.use(helmet());
   }
   private initErrorHandling() {
     this.app.use(errorMiddleware);
