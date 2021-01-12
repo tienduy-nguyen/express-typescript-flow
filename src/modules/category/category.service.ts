@@ -12,11 +12,19 @@ export class CategoryService {
   }
 
   public async getCategories(): Promise<Category[]> {
-    return await this.categoryRepository.find();
+    try {
+      return await this.categoryRepository.find();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   public async getCategoryById(id: string): Promise<Category> {
-    return await this.categoryRepository.findOne({ where: { id: id } });
+    try {
+      return await this.categoryRepository.findOne({ where: { id: id } });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   public async createCategory(
@@ -44,6 +52,10 @@ export class CategoryService {
   }
 
   public async deleteCategory(id: string): Promise<void> {
+    try {
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
     await this.categoryRepository.delete(id);
   }
 }
