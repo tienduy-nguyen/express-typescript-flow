@@ -19,16 +19,19 @@ export class CategoryController {
   private initRoutes() {
     this.router.get('/', handler(this.index));
     this.router.get('/:id', handler(this.show));
+
     this.router.post(
       '/:id',
       validationMiddleware(CreateCategoryDto),
       handler(this.new),
     );
+
     this.router.put(
       '/:id',
       validationMiddleware(UpdateCategoryDto),
       handler(this.new),
     );
+
     this.router.delete('/:id', handler(this.new));
   }
 
