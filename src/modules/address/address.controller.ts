@@ -7,7 +7,7 @@ import { NotFoundException } from '@common/exceptions';
 import { authMiddleware, validationMiddleware } from '@common/middleware';
 
 @injectable()
-export class CategoryController {
+export class AddressController {
   public path = '/address';
   public router = express.Router();
   private addressService: AddressService;
@@ -64,7 +64,7 @@ export class CategoryController {
       const addressDto = req.body as UpdateAddressDto;
       const address = await this.addressService.getAddressById(id);
       if (!address) {
-        next(new NotFoundException(`Category with id ${id} not found`));
+        next(new NotFoundException(`Address with id ${id} not found`));
       }
       const updated = await this.addressService.updateAddress(
         address,
@@ -80,7 +80,7 @@ export class CategoryController {
     try {
       const id = req.params.id;
       await this.addressService.deleteAddress(id);
-      res.send({ message: `Delete successfully category with id ${id}` });
+      res.send({ message: `Delete successfully address with id ${id}` });
     } catch (error) {
       next(error);
     }
