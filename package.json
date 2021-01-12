@@ -75,6 +75,15 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "moduleNameMapper": {
+      "@common/(.*)": "<rootDir>/common/$1",
+      "@modules/(.*)": "<rootDir>/modules/$1",
+      "@app/(.*)": "<rootDir>/app/$1"
+    }
   }
 }
