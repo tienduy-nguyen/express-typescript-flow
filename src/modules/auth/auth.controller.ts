@@ -50,7 +50,7 @@ export class AuthController {
         userId: user.id,
       };
       const tokenData: ITokenCookie = this.jwtService.sign(dataStorage);
-      res.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+      res.setHeader('Set-Cookie', [this.authService.createCookie(tokenData)]);
       res.send(tokenData);
     } catch (error) {
       next(error);
@@ -65,7 +65,7 @@ export class AuthController {
           userId: (userResult as User).id,
         };
         const tokenData: ITokenCookie = this.jwtService.sign(dataStorage);
-        res.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+        res.setHeader('Set-Cookie', [this.authService.createCookie(tokenData)]);
         res.send(tokenData);
         return;
       }
@@ -79,8 +79,4 @@ export class AuthController {
     res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
     res.send(200);
   };
-
-  private createCookie(tokenData: ITokenCookie) {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
-  }
 }

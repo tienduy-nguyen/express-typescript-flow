@@ -33,7 +33,9 @@
     "baseUrl": ".",
     "paths": {
       "@modules/*": ["src/modules/*"],
-      "@common/*": ["src/common/*"]
+      "@common/*": ["src/common/*"],
+      "@app/*": ["src/app/*"],
+
     }
   },
   "include": [

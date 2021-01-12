@@ -5,10 +5,11 @@ import { BadRequestException, ConflictException } from '@common/exceptions';
 import bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { ITokenCookie } from './auth.interface';
 
 @injectable()
 export class AuthService {
-  private userRepository: Repository<User>;
+  private userRepository: Repository<User> = getRepository(User);
   constructor() {
     this.userRepository = getRepository(User);
   }
@@ -19,34 +20,32 @@ export class AuthService {
     if (user) {
       const isMatch = await bcrypt.compare(loginDto.password, user.password);
       if (isMatch) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password, ...result } = user;
         return result;
       }
     }
-    return new BadRequestException('Invalid credentials');
+    throw new BadRequestException('Invalid credentials');
   }
 
   public async registerUser(userDto: RegisterUserDto): Promise<User> {
-    try {
-      const userCheck = await this.userRepository.findOne({
-        where: { email: userDto.email },
-      });
-      if (userCheck) {
-        throw new ConflictException(
-          `User with email: ${userDto.email} already exists`,
-        );
-      }
-      const salt = await bcrypt.genSalt(10);
-      const hashPassword = await bcrypt.hash(userDto.password, salt);
-      const user = await this.userRepository.create({
-        ...userDto,
-        password: hashPassword,
-      });
-      await this.userRepository.save(user);
-      return user;
-    } catch (error) {
-      throw new BadRequestException('Something went wrong');
+    const userCheck = await this.userRepository.findOne({
+      where: { email: userDto.email },
+    });
+    console.log(userCheck);
+    if (userCheck) {
+      throw new ConflictException(
+        `User with email: ${userDto.email} already exists`,
+      );
     }
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword = await bcrypt.hash(userDto.password, salt);
+    const user = await this.userRepository.create({
+      ...userDto,
+      password: hashPassword,
+    });
+    await this.userRepository.save(user);
+    return user;
   }
 
   public async isExists(userInput: any) {
@@ -55,5 +54,9 @@ export class AuthService {
     });
     if (user) return true;
     return false;
+  }
+
+  public createCookie(tokenData: ITokenCookie) {
+    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
   }
 }
