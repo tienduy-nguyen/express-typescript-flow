@@ -1,5 +1,6 @@
 import { Address } from '@modules/address/address.entity';
 import { Post } from '@modules/posts/post.entity';
+import { IsEmail, MinLength } from 'class-validator';
 import {
   Entity,
   Column,
@@ -20,9 +21,11 @@ export class User {
 
   @Column()
   @Index({ unique: true })
+  @IsEmail()
   email: string;
 
   @Column()
+  @MinLength(3)
   password: string;
 
   @OneToOne(() => Address, (address: Address) => address.user, {
