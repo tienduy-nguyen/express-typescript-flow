@@ -21,7 +21,7 @@ export class CategoryRepository implements ICategoryRepository {
   public async createCategory(
     categoryDto: CreateCategoryDto,
   ): Promise<Category> {
-    const category = await this.ormRepository.create(categoryDto);
+    const category = this.ormRepository.create(categoryDto);
     await this.ormRepository.save(category);
     return category;
   }
