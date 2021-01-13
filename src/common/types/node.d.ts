@@ -13,5 +13,6 @@ declare namespace NodeJS {
     readonly TYPEORM_MIGRATIONS: string;
     readonly ROUTE_GLOBAL_PREFIX: string;
     readonly JWT_SECRET: string;
+    readonly TWO_FACTOR_AUTHENTICATION_APP_NAME: string;
   }
 }

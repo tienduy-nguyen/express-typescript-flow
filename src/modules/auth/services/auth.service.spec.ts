@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import { AuthService } from './auth.service';
 import { container } from 'tsyringe';
 import * as typeorm from 'typeorm';
-import { ITokenCookie } from './auth.interface';
-import { RegisterUserDto } from './dto/register-user.dto';
+import { ITokenCookie } from '../auth.interface';
+import { RegisterUserDto } from '../dto/register-user.dto';
 import { ConflictException } from '@common/exceptions';
 
 (typeorm as any).getRepository = jest.fn();

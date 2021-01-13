@@ -1,19 +1,19 @@
 import { BadRequestException } from '@common/exceptions';
-import { injectable } from 'tsyringe';
-import { getRepository, Repository } from 'typeorm';
+import { inject, injectable } from 'tsyringe';
 import { Category } from './category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import { ICategoryRepository } from './repository';
 
 @injectable()
 export class CategoryService {
-  private categoryRepository: Repository<Category>;
-  constructor() {
-    this.categoryRepository = getRepository(Category);
-  }
+  constructor(
+    @inject('CategoryRepository')
+    private categoryRepository: ICategoryRepository,
+  ) {}
 
   public async getCategories(): Promise<Category[]> {
     try {
-      return await this.categoryRepository.find();
+      return await this.categoryRepository.getCategories();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -21,7 +21,7 @@ export class CategoryService {
 
   public async getCategoryById(id: string): Promise<Category> {
     try {
-      return await this.categoryRepository.findOne({ where: { id: id } });
+      return await this.categoryRepository.getCategoryById(id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -31,7 +31,7 @@ export class CategoryService {
     categoryDto: CreateCategoryDto,
   ): Promise<Category> {
     try {
-      const category = await this.categoryRepository.create(categoryDto);
+      const category = this.categoryRepository.createCategory(categoryDto);
       return category;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -43,8 +43,10 @@ export class CategoryService {
     categoryDto: UpdateCategoryDto,
   ): Promise<Category> {
     try {
-      const updated: Category = Object.assign(category, categoryDto);
-      await this.categoryRepository.save(updated);
+      const updated = await this.categoryRepository.updateCategory(
+        category,
+        categoryDto,
+      );
       return updated;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -53,7 +55,7 @@ export class CategoryService {
 
   public async deleteCategory(id: string): Promise<void> {
     try {
-      await this.categoryRepository.delete(id);
+      await this.categoryRepository.deleteCategory(id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

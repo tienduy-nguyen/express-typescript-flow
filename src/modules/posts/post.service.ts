@@ -1,7 +1,7 @@
 import { NotFoundException } from 'src/common/exceptions';
 import { inject, injectable } from 'tsyringe';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { IPostRepository } from './repositories/post.repository.interface';
+import { IPostRepository } from './repository/post.repository.interface';
 
 @injectable()
 export class PostService {

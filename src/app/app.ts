@@ -6,31 +6,38 @@ import { errorMiddleware } from '@common/middleware';
 import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
+import cookieParser from 'cookie-parser';
 
 @injectable()
 export class App {
   private controllers = [] as IController[];
   private port = 5000; // Default port
   private app: Application;
+  private globalPrefix: string;
 
   constructor() {
     this.app = express();
-    this.bootstrapServerExpress();
   }
 
   /* Public methods */
   public get getServer() {
     return this.app;
   }
-  public listen() {
+  public listen(port: number, log = true) {
+    this.port = port;
+    this.bootstrapServerExpress();
     this.app.listen(this.port, () => {
-      console.log(`Server is running at http://localhost:${this.port}/`);
+      if (log) {
+        console.log(`Server is running at http://localhost:${this.port}/`);
+      }
     });
+  }
+  public useGlobalPrefix(prefix: string) {
+    this.globalPrefix = '/' + prefix;
   }
 
   /* Bootstrap server */
-  private async bootstrapServerExpress() {
-    this.port = Number(process.env.SERVER_PORT);
+  private bootstrapServerExpress() {
     this.initMiddleware();
     this.initControllers();
     this.initErrorHandling();
@@ -38,8 +45,9 @@ export class App {
 
   private initMiddleware() {
     this.app.use(cors());
-    this.app.use(express.json());
     this.app.use(helmet());
+    this.app.use(express.json());
+    this.app.use(cookieParser());
   }
   private initErrorHandling() {
     this.app.use(errorMiddleware);
@@ -55,7 +63,7 @@ export class App {
     this.controllers = appControllers.all;
 
     this.controllers.forEach(c => {
-      this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
+      this.app.use(this.globalPrefix, c.router);
     });
   }
 }

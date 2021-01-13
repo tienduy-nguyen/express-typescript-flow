@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { IDataStoredInToken } from './auth.interface';
+import { IDataStoredInToken } from '../auth.interface';
 import { JwtService } from './jwt.service';
 import * as dotenv from 'dotenv';
 import { InvalidCredentialsException } from '@common/exceptions';

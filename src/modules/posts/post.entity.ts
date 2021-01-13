@@ -10,7 +10,7 @@ import { Category } from '@modules/category/category.entity';
 @Entity()
 export class Post extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   author: string;

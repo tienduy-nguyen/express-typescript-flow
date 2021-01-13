@@ -1,6 +1,5 @@
 import request from 'supertest';
 import * as typeorm from 'typeorm';
-import { App } from 'src/app/app';
 import { RegisterUserDto } from '@modules/auth/dto';
 import { AuthController } from './auth.controller';
 import * as dotenv from 'dotenv';
@@ -27,7 +26,7 @@ describe('The authController', () => {
           save: () => Promise.resolve(),
         });
         const authController = new AuthController();
-        const app = new App();
+        let app: any;
         return request(app.getServer)
           .post(`${authController.path}/register`)
           .send(userData)

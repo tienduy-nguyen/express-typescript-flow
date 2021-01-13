@@ -29,7 +29,8 @@ export class AddressService {
 
   public async createAddress(AddressDto: CreateAddressDto): Promise<Address> {
     try {
-      const address = await this.addressRepository.create(AddressDto);
+      const address = this.addressRepository.create(AddressDto);
+      await this.addressRepository.save(address);
 
       return address;
     } catch (error) {

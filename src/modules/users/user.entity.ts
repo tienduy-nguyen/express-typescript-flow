@@ -1,5 +1,6 @@
 import { Address } from '@modules/address/address.entity';
 import { Post } from '@modules/posts/post.entity';
+import { IsBoolean, IsEmail, IsString, MinLength } from 'class-validator';
 import {
   Entity,
   Column,
@@ -20,10 +21,22 @@ export class User {
 
   @Column()
   @Index({ unique: true })
+  @IsEmail()
   email: string;
 
   @Column()
+  @MinLength(3)
   password: string;
+
+  @Column({
+    nullable: true,
+  })
+  @IsString()
+  twoFactorAuthCode: string;
+
+  @Column('boolean', { default: false })
+  @IsBoolean()
+  isTwoFactorAuthEnabled: boolean;
 
   @OneToOne(() => Address, (address: Address) => address.user, {
     cascade: true,
