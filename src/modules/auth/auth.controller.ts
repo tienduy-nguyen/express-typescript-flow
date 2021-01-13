@@ -44,28 +44,27 @@ export class AuthController {
       validationMiddleware(LoginUserDto),
       handler(this.login),
     );
-    this.router.post(`${this.path}/logout`, authMiddleware, this.logout);
+    this.router.post(`${this.path}/logout`, authMiddleware(), this.logout);
 
     /* Two factor auth routes */
     // Generate auth code
     this.router.post(
       `${this.path}/2fa/generate`,
-      authMiddleware,
-
+      authMiddleware(),
       this.generateTwoFactorAuthCode,
     );
 
     this.router.post(
       `${this.path}/2fa/turn-on`,
-      validationMiddleware(TwoFactorAuthDto),
       authMiddleware,
+      validationMiddleware(TwoFactorAuthDto),
       this.turnOnTwoFactorAuth,
     );
 
     this.router.post(
       `${this.path}/2fa/authenticate`,
-      validationMiddleware(TwoFactorAuthDto),
       authMiddleware(true),
+      validationMiddleware(TwoFactorAuthDto),
       this.secondFactorAuth,
     );
   }

@@ -32,7 +32,6 @@ export class AuthService {
     const userCheck = await this.userRepository.findOne({
       where: { email: userDto.email },
     });
-    console.log(userCheck);
     if (userCheck) {
       throw new ConflictException(
         `User with email: ${userDto.email} already exists`,
@@ -44,8 +43,8 @@ export class AuthService {
       ...userDto,
       password: hashPassword,
     });
-    await this.userRepository.save(user);
-    return user;
+    const newUser = await this.userRepository.save(user);
+    return newUser;
   }
 
   public async isExists(userInput: any) {

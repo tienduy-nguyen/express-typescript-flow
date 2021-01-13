@@ -22,19 +22,23 @@ export class PostController {
   private initializeRoutes() {
     this.router.get(this.path, handler(this.getPosts));
     this.router.get(`${this.path}/:id`, handler(this.getPostById));
-    this.router
-      .all(`${this.path}/*`, authMiddleware)
-      .post(
-        this.path,
-        validationMiddleware(CreatePostDto),
-        handler(this.createPost),
-      )
-      .put(
-        `${this.path}/:id`,
-        validationMiddleware(UpdatePostDto, true),
-        handler(this.updatePost),
-      )
-      .delete(`${this.path}/:id`, handler(this.deletePost));
+    this.router.post(
+      this.path,
+      authMiddleware(),
+      validationMiddleware(CreatePostDto),
+      handler(this.createPost),
+    );
+    this.router.put(
+      `${this.path}/:id`,
+      authMiddleware(),
+      validationMiddleware(UpdatePostDto, true),
+      handler(this.updatePost),
+    );
+    this.router.delete(
+      `${this.path}/:id`,
+      authMiddleware(),
+      handler(this.deletePost),
+    );
   }
 
   /* Private methods of routes */
