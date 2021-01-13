@@ -9,5 +9,12 @@ cache:
 notification:
   email: false
 
+
+
+# safelist
+branches:
+  only:
+  - master
+
 script:
   - yarn test
