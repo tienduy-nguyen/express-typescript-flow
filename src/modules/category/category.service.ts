@@ -31,7 +31,8 @@ export class CategoryService {
     categoryDto: CreateCategoryDto,
   ): Promise<Category> {
     try {
-      const category = await this.categoryRepository.create(categoryDto);
+      const category = this.categoryRepository.create(categoryDto);
+      await this.categoryRepository.save(category);
       return category;
     } catch (error) {
       throw new BadRequestException(error.message);
