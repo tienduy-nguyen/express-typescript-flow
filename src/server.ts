@@ -5,24 +5,22 @@ import { createConnection } from 'typeorm';
 import { App } from './app/app';
 import { container } from 'tsyringe';
 
-function bootstrap() {
-  // Set global .env config
-  dotenv.config();
+dotenv.config();
 
+async function bootstrap() {
   // Connect database
   try {
-    createConnection(ormConfig()).then(connection => {
-      console.log('Database connected!');
-      // Bootstrap server
-      const app = container.resolve(App);
-      app.useGlobalPrefix('api');
-      const port = Number(process.env.SERVER_PORT);
-      app.listen(port);
-      return connection;
-    });
+    const connection = await createConnection(ormConfig());
+    await connection.runMigrations();
+    console.log('Database connected!');
   } catch (error) {
     console.log('Error while connecting to the database', error);
     return error;
   }
+  // Bootstrap server
+  const app = container.resolve(App);
+  app.useGlobalPrefix('api');
+  const port = Number(process.env.SERVER_PORT);
+  app.listen(port);
 }
 bootstrap();

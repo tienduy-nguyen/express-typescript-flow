@@ -6,7 +6,6 @@ import bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { ITokenCookie } from './auth.interface';
-import * as speakeasy from 'speakeasy';
 
 @injectable()
 export class AuthService {
@@ -59,15 +58,5 @@ export class AuthService {
 
   public createCookie(tokenData: ITokenCookie) {
     return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}`;
-  }
-
-  public getTwoFactorAuthCode() {
-    const secretCode = speakeasy.generateSecret({
-      name: process.env.TWO_FACTOR_AUTHENTICATION_APP_NAME,
-    });
-    return {
-      otpauthUrl: secretCode.otpauth_url,
-      base32: secretCode.base32,
-    };
   }
 }
