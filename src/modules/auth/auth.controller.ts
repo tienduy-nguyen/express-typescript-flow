@@ -118,7 +118,7 @@ export class AuthController {
 
   private logout = (req: Request, res: Response) => {
     res.setHeader('Set-Cookie', ['Authorization=;Max-age=0']);
-    res.send(200);
+    res.sendStatus(200);
   };
 
   /* Two factor auth */

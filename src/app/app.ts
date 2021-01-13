@@ -6,7 +6,7 @@ import { errorMiddleware } from '@common/middleware';
 import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 @injectable()
 export class App {
