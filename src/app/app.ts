@@ -6,6 +6,7 @@ import { errorMiddleware } from '@common/middleware';
 import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
+import * as cookieParser from 'cookie-parser';
 
 @injectable()
 export class App {
@@ -44,8 +45,9 @@ export class App {
 
   private initMiddleware() {
     this.app.use(cors());
-    this.app.use(express.json());
     this.app.use(helmet());
+    this.app.use(express.json());
+    this.app.use(cookieParser());
   }
   private initErrorHandling() {
     this.app.use(errorMiddleware);
