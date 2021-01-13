@@ -28,11 +28,13 @@ export class User {
   @MinLength(3)
   password: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   @IsString()
   twoFactorAuthCode: string;
 
-  @Column()
+  @Column('boolean', { default: false })
   @IsBoolean()
   isTwoFactorAuthEnabled: boolean;
 
