@@ -5,7 +5,7 @@ import { createConnection } from 'typeorm';
 import { App } from './app/app';
 import { container } from 'tsyringe';
 
-async function bootstrap() {
+function bootstrap() {
   // Set global .env config
   dotenv.config();
 
