@@ -17,18 +17,22 @@ export class CategoryController {
   }
 
   private initRoutes() {
-    this.router.get('/', handler(this.index));
-    this.router.get('/:id', handler(this.show));
+    this.router.get(this.path, handler(this.index));
+    this.router.get(`${this.path}/:id`, handler(this.show));
 
     this.router
       .all(`${this.path}/*`, authMiddleware)
-      .post('/:id', validationMiddleware(CreateCategoryDto), handler(this.new))
+      .post(
+        `${this.path}/:id`,
+        validationMiddleware(CreateCategoryDto),
+        handler(this.new),
+      )
       .put(
-        '/:id',
+        `${this.path}/:id`,
         validationMiddleware(UpdateCategoryDto),
         handler(this.update),
       )
-      .delete('/:id', handler(this.delete));
+      .delete(`${this.path}/:id`, handler(this.delete));
   }
 
   /* Private methods for routes */

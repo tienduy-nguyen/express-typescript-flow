@@ -17,14 +17,22 @@ export class AddressController {
   }
 
   private initRoutes() {
-    this.router.get('/', handler(this.index));
-    this.router.get('/:id', handler(this.show));
+    this.router.get(this.path, handler(this.index));
+    this.router.get(`${this.path}/:id`, handler(this.show));
 
     this.router
       .all(`${this.path}/*`, authMiddleware)
-      .post('/:id', validationMiddleware(CreateAddressDto), handler(this.new))
-      .put('/:id', validationMiddleware(UpdateAddressDto), handler(this.update))
-      .delete('/:id', handler(this.delete));
+      .post(
+        `${this.path}/:id`,
+        validationMiddleware(CreateAddressDto),
+        handler(this.new),
+      )
+      .put(
+        `${this.path}/:id`,
+        validationMiddleware(UpdateAddressDto),
+        handler(this.update),
+      )
+      .delete(`${this.path}/:id`, handler(this.delete));
   }
 
   /* Private methods for routes */

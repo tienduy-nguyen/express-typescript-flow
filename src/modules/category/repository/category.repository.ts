@@ -15,7 +15,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
   public async getCategoryById(id: string): Promise<Category> {
     return await this.ormRepository.findOne({
-      where: { id: id },
+      where: { id: Number(id) },
     });
   }
   public async createCategory(
