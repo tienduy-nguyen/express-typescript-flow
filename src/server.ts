@@ -10,8 +10,7 @@ dotenv.config();
 async function bootstrap() {
   // Connect database
   try {
-    const connection = await createConnection(ormConfig());
-    await connection.runMigrations();
+    await createConnection(ormConfig());
     console.log('Database connected!');
   } catch (error) {
     console.log('Error while connecting to the database', error);
