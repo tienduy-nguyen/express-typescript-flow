@@ -6,14 +6,17 @@ import { errorMiddleware } from '@common/middleware';
 import helmet from 'helmet';
 import './app.provider';
 import { AppController } from './app.controller';
+import * as dotenv from 'dotenv';
 
 @injectable()
 export class App {
   private controllers = [] as IController[];
-  private port = 5000; // Default port
-  private app: Application;
+  private port = 5002; // Default port
+  private app: Application = null;
+  private globalPrefix: string;
 
   constructor() {
+    dotenv.config();
     this.app = express();
     this.bootstrapServerExpress();
   }
@@ -22,15 +25,18 @@ export class App {
   public get getServer() {
     return this.app;
   }
-  public listen() {
-    this.app.listen(this.port, () => {
-      console.log(`Server is running at http://localhost:${this.port}/`);
-    });
+  public listen(log = true) {
+    if (log) {
+      this.app.listen(this.port, () => {
+        console.log(`Server is running at http://localhost:${this.port}/`);
+      });
+    }
   }
 
   /* Bootstrap server */
-  private async bootstrapServerExpress() {
+  private bootstrapServerExpress() {
     this.port = Number(process.env.SERVER_PORT);
+    this.globalPrefix = process.env.ROUTE_GLOBAL_PREFIX;
     this.initMiddleware();
     this.initControllers();
     this.initErrorHandling();
@@ -55,7 +61,7 @@ export class App {
     this.controllers = appControllers.all;
 
     this.controllers.forEach(c => {
-      this.app.use(process.env.ROUTE_GLOBAL_PREFIX, c.router);
+      this.app.use(this.globalPrefix, c.router);
     });
   }
 }
