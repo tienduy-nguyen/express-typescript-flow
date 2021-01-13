@@ -15,7 +15,7 @@ export class PostRepository implements IPostRepository {
   }
   public async getPostById(id: string): Promise<Post> {
     return await this.ormRepository.findOne({
-      where: { id: Number(id) },
+      where: { id: id },
     });
   }
   public async createPost(postDto: CreatePostDto): Promise<Post> {
