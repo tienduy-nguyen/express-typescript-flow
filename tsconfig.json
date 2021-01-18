@@ -3,7 +3,7 @@
     "target": "esNext",
     "typeRoots": [
       "./node_modules/@types",
-      "src/types"
+      "src/common/types"
     ],
     "module": "commonjs",
     "pretty": true,
@@ -30,7 +30,13 @@
     "outDir": "./dist",
     "allowJs": true,
     "noEmit": false,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@modules/*": ["src/modules/*"],
+      "@common/*": ["src/common/*"],
+      "@app/*": ["src/app/*"],
+
+    }
   },
   "include": [
     "src"
