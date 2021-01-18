@@ -2,3 +2,5 @@ build/*
 dist/*
 node_modules/*
 .eslintrc.js
+test
+__mocks__

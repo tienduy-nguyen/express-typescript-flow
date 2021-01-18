@@ -3,37 +3,45 @@ import { AuthService } from '../services/auth.service';
 import { container } from 'tsyringe';
 import { ITokenCookie } from '../auth.interface';
 import { RegisterUserDto } from '../dto/register-user.dto';
-// import { ConflictException } from '@common/exceptions';
-import { mocked } from 'ts-jest/utils';
 import { ConflictException } from '@common/exceptions';
+import * as typeorm from 'typeorm';
 
-const registerDto: RegisterUserDto = {
+const registerDto1: RegisterUserDto = {
   email: 'user1@gmail.com',
   name: 'user1',
   password: 'anotherworld',
 };
-const oneUser = {
+const registerDto2: RegisterUserDto = {
+  email: 'user2@gmail.com',
+  name: 'user2',
+  password: 'anotherworld',
+};
+const user1 = {
   id: 'an id',
   email: 'user1@gmail.com',
   name: 'user1',
   password: 'anotherworld',
 };
+const user2 = {
+  id: 'an id',
+  email: 'user2@gmail.com',
+  name: 'user2',
+  password: 'anotherworld',
+};
 
-const mockAuthRepository = () => ({
-  findOne: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-});
+(typeorm as any).getRepository = jest.fn();
 
-jest.mock('typeorm');
+// const mockAuthRepo = () => ({
+//   findOne: jest.fn(), // return value will be set in the test
+//   create: jest.fn(),
+//   save: jest.fn(),
+// });
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let authRepo;
 
   beforeEach(async () => {
     authService = container.resolve(AuthService);
-    authRepo = mocked(mockAuthRepository);
   });
 
   describe('Create cookie method', () => {
@@ -48,20 +56,26 @@ describe('AuthService', () => {
 
   describe('registerUser', () => {
     it('Should throw an error when email already taken', async () => {
-      authRepo.findOne.mockResolvedValue(oneUser);
-      try {
-        await authService.registerUser(registerDto);
-      } catch (error) {
-        expect(error).toBeInstanceOf(ConflictException);
-      }
+      (typeorm as any).getRepository.mockReturnValue({
+        findOne: () => Promise.resolve(user1),
+      });
+      await expect(
+        authService.registerUser(registerDto1),
+      ).rejects.toBeInstanceOf(ConflictException);
     });
-    it('Should not throw error when create new user', async () => {
-      authRepo.findOne.mockResolvedValue(null);
-      authRepo.create.mockReturnValue(oneUser);
-      authRepo.save.mockResolvedValue(oneUser);
+  });
 
-      const result = await authService.registerUser(registerDto);
-      expect(result).toEqual(oneUser);
+  describe('registerUser2', () => {
+    it('Should create new user', async () => {
+      (typeorm as any).getRepository.mockReturnValue({
+        findOne: () => Promise.resolve(undefined),
+        create: () => user2,
+        save: () => Promise.resolve(),
+      });
+
+      await expect(authService.registerUser(registerDto2)).resolves.toEqual(
+        user2,
+      );
     });
   });
 });
