@@ -6,9 +6,9 @@ export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: string;
+  @Column({ nullable: true })
+  name?: string;
 
   @ManyToMany(() => Post, (post: Post) => post.categories)
-  posts: Post[];
+  posts?: Post[];
 }

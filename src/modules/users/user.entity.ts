@@ -16,7 +16,7 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column()
@@ -43,8 +43,8 @@ export class User {
     eager: true,
   })
   @JoinColumn()
-  address: Address;
+  address?: Address;
 
   @OneToMany(() => Post, (post: Post) => post.author)
-  post: Post[];
+  posts?: Post[];
 }

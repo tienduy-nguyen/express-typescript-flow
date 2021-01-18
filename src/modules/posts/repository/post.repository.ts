@@ -19,7 +19,7 @@ export class PostRepository implements IPostRepository {
     });
   }
   public async createPost(postDto: CreatePostDto): Promise<Post> {
-    const post = await this.ormRepository.create(postDto);
+    const post = this.ormRepository.create(postDto);
     await this.ormRepository.save(post);
     return post;
   }
