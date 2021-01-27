@@ -10,6 +10,6 @@ End to end how to code a REST API project with **Nodejs** - **TypeScript** - **E
 4. Authentication with JsonWebToken
 5. Typeorm database relationship
 6. Testing
-7. **Two-factor authentication**
+7. Two-factor authentication
 8. CI-CD
 
