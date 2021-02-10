@@ -22,4 +22,4 @@ async function bootstrap() {
   const port = Number(process.env.SERVER_PORT);
   app.listen(port);
 }
-bootstrap();
+Promise.resolve(bootstrap());
