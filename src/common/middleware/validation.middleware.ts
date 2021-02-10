@@ -2,7 +2,7 @@ import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { HttpException } from '@common/exceptions';
 import handler from 'express-async-handler';
-import { ClassType } from 'class-transformer/ClassTransformer';
+import { ClassType } from 'class-transformer/esm2015';
 import { RequestHandler } from 'express';
 
 export function validationMiddleware<T>(
